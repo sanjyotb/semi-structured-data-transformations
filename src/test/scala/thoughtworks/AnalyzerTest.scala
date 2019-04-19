@@ -1,9 +1,10 @@
 package thoughtworks
 
 import org.apache.spark.sql.types._
-import org.scalatest.Matchers
+import org.scalatest.{Ignore, Matchers}
 import thoughtworks.Analyzer._
 
+@Ignore
 class AnalyzerTest extends FeatureSpecWithSpark with Matchers {
 
   import spark.implicits._
@@ -13,7 +14,7 @@ class AnalyzerTest extends FeatureSpecWithSpark with Matchers {
       val columnName = "index"
       val testDF = Seq("book-1", "book-2", "book-3").toDF(columnName)
 
-      val totalNumberOfBooks = testDF.totalQuantity(spark)
+      val totalNumberOfBooks = testDF.totalBooks(spark)
 
       totalNumberOfBooks should be(3)
     }

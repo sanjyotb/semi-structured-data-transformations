@@ -1,7 +1,5 @@
 package thoughtworks
 
-import org.apache.spark.sql.functions._
-import org.apache.spark.sql.types.DataTypes
 import org.apache.spark.sql.{Dataset, Row, SparkSession}
 import thoughtworks.AnalyzerUtils._
 
@@ -9,10 +7,11 @@ object Analyzer {
 
   implicit class NYTDataframe(val nytDF: Dataset[Row]) {
 
-    def totalQuantity(spark: SparkSession): Long = {
+    def totalBooks(spark: SparkSession): Long = {
       nytDF.countRows(spark)
     }
 
+    //Merge integer and double price of books into a single column
     def mergeIntegerAndDoublePrice(spark: SparkSession): Dataset[Row] = {
       import spark.implicits._
       val map = Map("doublePrice" -> 0.0, "intPrice" -> 0.0)
@@ -28,34 +27,29 @@ object Analyzer {
         .dropAColumn(spark, "intPrice")
     }
 
+    //Transform published_date column into readable format
     def transformPublishedDate(spark: SparkSession): Dataset[Row] = {
-      nytDF.addAColumn(spark,"publishedDate",
-        nytDF.col("published_date.$date.$numberLong")./(1000)
-          .cast(DataTypes.TimestampType)
-          .cast(DataTypes.DateType)
-      )
+      spark.emptyDataFrame
     }
 
+    //Calculate average price of all books
     def averagePrice(spark: SparkSession): Double = {
-      nytDF.averageOfAColumn(spark, "nytprice")
+      0.0
     }
 
+    //Calculate minimum price of all books
     def minimumPrice(spark: SparkSession): Double = {
-      nytDF.minimumOfAColumn(spark, "nytprice")
+      0.0
     }
 
+    //Calculate maximum price of all books
     def maximumPrice(spark: SparkSession): Double = {
-      nytDF.maximumOfAColumn(spark, "nytprice")
+      0.0
     }
 
+    //Calculate total number of books published in a year
     def totalBooksPublished(spark: SparkSession, inYear: String): Long = {
-      import spark.implicits._
-
-      val isSoldInYear = year($"publishedDate") === inYear
-
-      nytDF.select($"publishedDate")
-        .filterAColumn(spark, isSoldInYear)
-        .countRows(spark)
+      0
     }
   }
 }

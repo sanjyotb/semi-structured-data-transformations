@@ -14,24 +14,23 @@ object NewYorkTimes {
       .json("./src/main/resources/nyt2.json")
       .cache()
 
-    val nytTransformedDF = nytDF.mergeIntegerAndDoublePrice(spark)
-      .transformPublishedDate(spark)
 
-    val totalNumRows = nytTransformedDF.totalQuantity(spark)
-    val averagePrice = nytTransformedDF.averagePrice(spark)
-    val minimumPrice = nytTransformedDF.minimumPrice(spark)
-    val maximumPrice = nytTransformedDF.maximumPrice(spark)
-    val totalNumBooksPublished = nytTransformedDF.totalBooksPublished(spark, "2008")
+    val nytMergePriceDF = nytDF.mergeIntegerAndDoublePrice(spark)
+
+    //Write code for transforming published_date column into readable format
+    val nytTransformedDF = nytMergePriceDF.transformPublishedDate(spark)
+
+    val totalNumRows = nytTransformedDF.totalBooks(spark)
+    //Perform operations on NYT Books Dataset
+
 
     println("Initial Analysis of Books from New York Times Data shows: \n")
     println(s"The schema of the data is")
     nytDF.printSchema()
-    nytDF.show()
     println(s"The total number of books we have data about is $totalNumRows")
-    println(f"The average price of books sold is $averagePrice%1.2f")
-    println(f"The minimum price of books sold is $minimumPrice%1.2f")
-    println(f"The maximum price of books sold is $maximumPrice%1.2f")
-    println(s"The number of books published in year 2008 are $totalNumBooksPublished")
+
+    //Print results of the operations performed
+
 
     val explicitSchemaDF = spark.read
       .option("header", "true")
@@ -44,27 +43,7 @@ object NewYorkTimes {
     explicitSchemaDF.printSchema()
     explicitSchemaDF.show()
 
-    val missingFieldInSchemaDF = spark.read
-      .option("header", "true")
-      .schema(
-        getMissingFieldSchema()
-      )
-      .json("./src/main/resources/nyt2.json")
-      .cache()
-
-    missingFieldInSchemaDF.printSchema()
-    missingFieldInSchemaDF.show()
-
-    val typeErrorInSchemaDF = spark.read
-      .option("header", "true")
-      .schema(
-        getTypeErrorInSchema()
-      )
-      .json("./src/main/resources/nyt2.json")
-      .cache()
-
-    typeErrorInSchemaDF.printSchema()
-    typeErrorInSchemaDF.show()
+    //Try using getMissingFieldSchema() and getTypeErrorInSchema() for books dataset and check output
   }
 
   def getTypeErrorInSchema(): StructType = {
