@@ -17,7 +17,7 @@ object Recipe {
     println(s"The schema of the data is")
     recipesDF.printSchema()
 
-    recipesDF.select($"Author", $"Name", $"Method", explode($"Method") as "Steps").show()
-    recipesDF.select($"Author", $"Name", $"Ingredients", explode($"Ingredients") as "Ingredient").show()
+    //Split the column Method into one method per row
+    //Split the column Ingredients into one ingredient per row
   }
 }

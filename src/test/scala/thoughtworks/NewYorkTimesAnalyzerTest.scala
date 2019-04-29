@@ -2,10 +2,10 @@ package thoughtworks
 
 import org.apache.spark.sql.types._
 import org.scalatest.{Ignore, Matchers}
-import thoughtworks.Analyzer._
+import thoughtworks.NewYorkTimesAnalyzer._
 
 @Ignore
-class AnalyzerTest extends FeatureSpecWithSpark with Matchers {
+class NewYorkTimesAnalyzerTest extends FeatureSpecWithSpark with Matchers {
 
   import spark.implicits._
 

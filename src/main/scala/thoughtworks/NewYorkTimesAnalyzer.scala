@@ -1,14 +1,13 @@
 package thoughtworks
 
 import org.apache.spark.sql.{Dataset, Row, SparkSession}
-import thoughtworks.AnalyzerUtils._
 
-object Analyzer {
+object NewYorkTimesAnalyzer {
 
   implicit class NYTDataframe(val nytDF: Dataset[Row]) {
 
     def totalBooks(spark: SparkSession): Long = {
-      nytDF.countRows(spark)
+      nytDF.count()
     }
 
     //Merge integer and double price of books into a single column
@@ -16,15 +15,15 @@ object Analyzer {
       import spark.implicits._
       val map = Map("doublePrice" -> 0.0, "intPrice" -> 0.0)
       val withNytPriceDF = nytDF
-        .addAColumn(spark,"doublePrice", nytDF.col("price.$numberDouble").cast("double"))
-        .addAColumn(spark,"intPrice", nytDF.col("price.$numberInt").cast("double"))
+        .withColumn("doublePrice", nytDF.col("price.$numberDouble").cast("double"))
+        .withColumn("intPrice", nytDF.col("price.$numberInt").cast("double"))
         .na
         .fill(map)
-        .addAColumn(spark,"nytprice", $"doublePrice" + $"intPrice")
+        .withColumn("nytprice", $"doublePrice" + $"intPrice")
 
       withNytPriceDF
-        .dropAColumn(spark, "doublePrice")
-        .dropAColumn(spark, "intPrice")
+        .drop("doublePrice")
+        .drop("intPrice")
     }
 
     //Transform published_date column into readable format
