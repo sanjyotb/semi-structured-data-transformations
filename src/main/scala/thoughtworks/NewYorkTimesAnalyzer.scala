@@ -6,13 +6,14 @@ object NewYorkTimesAnalyzer {
 
   implicit class NYTDataframe(val nytDF: Dataset[Row]) {
 
-    def totalBooks(spark: SparkSession): Long = {
+    def totalQuantity(spark: SparkSession): Long = {
       nytDF.count()
     }
 
     //Merge integer and double price of books into a single column
     def mergeIntegerAndDoublePrice(spark: SparkSession): Dataset[Row] = {
       import spark.implicits._
+
       val map = Map("doublePrice" -> 0.0, "intPrice" -> 0.0)
       val withNytPriceDF = nytDF
         .withColumn("doublePrice", nytDF.col("price.$numberDouble").cast("double"))
