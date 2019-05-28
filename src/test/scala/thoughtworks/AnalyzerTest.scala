@@ -1,10 +1,10 @@
 package thoughtworks
 
 import org.apache.spark.sql.types._
-import org.scalatest.{Ignore, Matchers}
+import org.apache.spark.sql.{DataFrame, Dataset, Row}
+import org.scalatest.Matchers
 import thoughtworks.Analyzer._
 
-@Ignore
 class AnalyzerTest extends FeatureSpecWithSpark with Matchers {
 
   import spark.implicits._
@@ -83,7 +83,7 @@ class AnalyzerTest extends FeatureSpecWithSpark with Matchers {
           |{"published_date":{"$date":{"$numberLong":"1212883200000"}}}
           |]""".stripMargin
 
-      val testDF = spark.read
+      val testDF: DataFrame = spark.read
         .schema(StructType(
           List(
             publishedDateField
@@ -92,7 +92,7 @@ class AnalyzerTest extends FeatureSpecWithSpark with Matchers {
         .json(Seq(jsonStr).toDS)
         .cache()
 
-      val actualDF = testDF.transformPublishedDate(spark)
+      val actualDF: Dataset[Row] = testDF.transformPublishedDate(spark)
 
       val expectedJsonStr =
         """[{"published_date":{"$date":{"$numberLong":"1212883200000"}}, "publishedDate":"2008-06-08"},
@@ -134,11 +134,11 @@ class AnalyzerTest extends FeatureSpecWithSpark with Matchers {
           |]""".stripMargin
 
       val testDF = spark.read
-          .schema(StructType(
-            List(
-              priceField
-            )
-          ))
+        .schema(StructType(
+          List(
+            priceField
+          )
+        ))
         .json(Seq(jsonStr).toDS)
         .cache()
 

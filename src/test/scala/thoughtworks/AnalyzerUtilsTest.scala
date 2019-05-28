@@ -1,10 +1,10 @@
 package thoughtworks
 
-import org.scalatest.{Ignore, Matchers}
-import AnalyzerUtils._
 import org.apache.spark.sql.{Dataset, Row}
+import org.scalatest.Matchers
+import thoughtworks.AnalyzerUtils._
 
-@Ignore
+
 class AnalyzerUtilsTest extends FeatureSpecWithSpark with Matchers {
 
   import spark.implicits._
@@ -89,7 +89,7 @@ class AnalyzerUtilsTest extends FeatureSpecWithSpark with Matchers {
 
       val actualDF = testDF.addAColumn(spark, columnB, lit("B"))
 
-      val expectedDF = Seq((1.0,"B"), (3.0,"B"), (5.0,"B")).toDF(columnA, columnB)
+      val expectedDF = Seq((1.0, "B"), (3.0, "B"), (5.0, "B")).toDF(columnA, columnB)
 
       actualDF.except(expectedDF).count() should be(0)
       expectedDF.except(actualDF).count() should be(0)
@@ -100,7 +100,7 @@ class AnalyzerUtilsTest extends FeatureSpecWithSpark with Matchers {
     scenario("drops a column in dataframe") {
       val columnA = "aColumn"
       val columnB = "bColumn"
-      val testDF = Seq((1.0,"a"), (3.0,"b"), (5.0,"c")).toDF(columnA, columnB)
+      val testDF = Seq((1.0, "a"), (3.0, "b"), (5.0, "c")).toDF(columnA, columnB)
 
       val actualDF = testDF.dropAColumn(spark, columnB)
 

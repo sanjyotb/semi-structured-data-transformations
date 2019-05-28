@@ -6,7 +6,7 @@ import thoughtworks.Analyzer._
 
 object NewYorkTimes {
   def main(args: Array[String]): Unit = {
-    val spark = SparkSession.builder().appName("Analyze New York Times - Books Data Spark App").getOrCreate()
+    val spark = SparkSession.builder().master("local").appName("Analyze New York Times - Books Data Spark App").getOrCreate()
 
     val nytDF = spark.read
       .option("inferSchema", "true")
@@ -14,7 +14,7 @@ object NewYorkTimes {
       .json("./src/main/resources/nyt2.json")
       .cache()
 
-
+    println(nytDF.show(10))
     val nytMergePriceDF = nytDF.mergeIntegerAndDoublePrice(spark)
 
     //Write code for transforming published_date column into readable format
@@ -78,15 +78,15 @@ object NewYorkTimes {
             StructField("$date", StructType(
               List(
                 StructField("$numberLong", LongType, true)))
-            , true)
+              , true)
           )
         ), true),
         StructField("publisher", StringType, true),
         StructField("rank", StructType(
-            List(
-              StructField("$numberInt", IntegerType, true)
-            )
-          ), false
+          List(
+            StructField("$numberInt", IntegerType, true)
+          )
+        ), false
         ),
         StructField("rank_last_week", StructType(
           List(
@@ -135,15 +135,15 @@ object NewYorkTimes {
             StructField("$date", StructType(
               List(
                 StructField("$numberLong", StringType, true)))
-            , true)
+              , true)
           )
         ), true),
         StructField("publisher", StringType, true),
         StructField("rank", StructType(
-            List(
-              StructField("$numberInt", StringType, true)
-            )
-          ), false
+          List(
+            StructField("$numberInt", StringType, true)
+          )
+        ), false
         ),
         StructField("rank_last_week", StructType(
           List(
@@ -192,15 +192,15 @@ object NewYorkTimes {
             StructField("$date", StructType(
               List(
                 StructField("$numberLong", StringType, true)))
-            , true)
+              , true)
           )
         ), true),
         StructField("publisher", StringType, true),
         StructField("rank", StructType(
-            List(
-              StructField("$numberInt", StringType, true)
-            )
-          ), false
+          List(
+            StructField("$numberInt", StringType, true)
+          )
+        ), false
         ),
         StructField("rank_last_week", StructType(
           List(
