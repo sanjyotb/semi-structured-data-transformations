@@ -1,5 +1,6 @@
 package thoughtworks
 
+import org.apache.spark.sql.functions.avg
 import org.apache.spark.sql.{Dataset, Row, SparkSession}
 
 object NewYorkTimesAnalyzer {
@@ -34,7 +35,10 @@ object NewYorkTimesAnalyzer {
 
     //Calculate average price of all books
     def averagePrice(spark: SparkSession): Double = {
-      0.0
+      nytDF
+        .select(avg(""))
+        .first()
+        .getDouble(0)
     }
 
     //Calculate minimum price of all books
