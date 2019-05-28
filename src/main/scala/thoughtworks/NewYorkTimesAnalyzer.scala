@@ -1,6 +1,6 @@
 package thoughtworks
 
-import org.apache.spark.sql.functions.avg
+import org.apache.spark.sql.functions._
 import org.apache.spark.sql.{Dataset, Row, SparkSession}
 
 object NewYorkTimesAnalyzer {
@@ -29,31 +29,39 @@ object NewYorkTimesAnalyzer {
     }
 
     //Transform published_date column into readable format
-    def transformPublishedDate(spark: SparkSession): Dataset[Row] = {
-      spark.emptyDataFrame
-    }
+    def transformPublishedDate(spark: SparkSession): Dataset[Row] =
+      nytDF.
+        select(
+          col("nytprice"), col("published_date"),
+          to_date(from_unixtime(col("published_date.$date.$numberLong") / 1000), "yyyy-MM-dd") as "publishedDate"
+        )
 
     //Calculate average price of all books
-    def averagePrice(spark: SparkSession): Double = {
+    def averagePrice(spark: SparkSession): Double =
       nytDF
-        .select(avg(""))
+        .select(avg("nytprice"))
         .first()
         .getDouble(0)
-    }
 
     //Calculate minimum price of all books
-    def minimumPrice(spark: SparkSession): Double = {
-      0.0
-    }
+    def minimumPrice(spark: SparkSession): Double =
+      nytDF
+        .select(min("nytprice"))
+        .first()
+        .getDouble(0)
 
     //Calculate maximum price of all books
-    def maximumPrice(spark: SparkSession): Double = {
-      0.0
-    }
+    def maximumPrice(spark: SparkSession): Double =
+      nytDF
+        .select(max("nytprice"))
+        .first()
+        .getDouble(0)
 
     //Calculate total number of books published in a year
-    def totalBooksPublished(spark: SparkSession, inYear: String): Long = {
-      0
+    def totalBooksPublished(spark: SparkSession, inYear: String): Long =
+      nytDF
+        .select(year(col("publishedDate")) as "year")
+        .where(col("year") === inYear)
+        .count()
     }
-  }
 }
