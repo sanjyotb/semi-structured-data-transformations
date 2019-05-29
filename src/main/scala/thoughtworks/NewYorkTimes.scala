@@ -6,7 +6,11 @@ import thoughtworks.Analyzer._
 
 object NewYorkTimes {
   def main(args: Array[String]): Unit = {
-    val spark = SparkSession.builder().appName("Analyze New York Times - Books Data Spark App").getOrCreate()
+    val spark = SparkSession
+      .builder()
+      .master("local")
+      .appName("Analyze New York Times - Books Data Spark App")
+      .getOrCreate()
 
     val nytDF = spark.read
       .option("inferSchema", "true")
